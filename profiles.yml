@@ -1,0 +1,25 @@
+my-snowflake-db:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: <SNOWFLAKE_HOST>
+
+      # User/password auth
+      user: <SNOWFLAKE_USERNAME>
+      password: <SNOWFLAKE_PASSWORD>
+
+      role: <SNOWFLAKE_ROLE>
+      database: <SNOWFLAKE_DATABASE>
+      warehouse: <SNOWFLAKE_WAREHOUSE>
+      schema: TPCH_SF10
+      threads: 4
+      client_session_keep_alive: False
+      query_tag: anything
+
+      # optional
+      connect_retries: 0 # default 0
+      connect_timeout: 10 # default: 10
+      retry_on_database_errors: False # default: false
+      retry_all: False  # default: false
+      reuse_connections: False # default: false (available v1.4+)
