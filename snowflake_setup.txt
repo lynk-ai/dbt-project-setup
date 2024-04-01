@@ -1,0 +1,133 @@
+-- How to use this file:
+-- 1. replace <company> with company name
+
+ 
+use role accountadmin;
+
+--------------------------------
+-- create warehouses
+--------------------------------
+-- for etl, reverse etl etc
+create warehouse UTIL_WH WAREHOUSE_SIZE=XSMALL AUTO_SUSPEND=30;
+-- for dbt trasformations
+create warehouse DBT_WH WAREHOUSE_SIZE=XSMALL AUTO_SUSPEND=30;
+-- for BI tools (consumers)
+create warehouse REPORTING_WH WAREHOUSE_SIZE=XSMALL AUTO_SUSPEND=30;
+
+--------------------------------
+-- create databases
+--------------------------------
+-- for dev environment
+create database util_db;
+-- for raw data
+create database <company>_src;
+-- for PROD environment
+create database <company>_prod;
+
+--------------------------------
+-- create schemas
+--------------------------------
+create schema <company>_prod.core;
+
+--------------------------------
+-- roles: developer, dbt_role
+--------------------------------
+-- create role
+create role developer;
+-- operate on wh
+GRANT OPERATE ON WAREHOUSE UTIL_WH TO ROLE developer;
+GRANT OPERATE ON WAREHOUSE <company>_WH TO ROLE developer;
+-- all on database
+GRANT ALL ON DATABASE util_db TO ROLE developer;
+GRANT ALL ON DATABASE <company>_src TO ROLE developer;
+GRANT ALL ON DATABASE <company>_prod TO ROLE developer;
+
+--------------------------------
+-- analyst role 
+--------------------------------
+-- create role
+create role analyst;
+-- operate on wh
+GRANT OPERATE ON WAREHOUSE UTIL_WH TO ROLE analyst;
+GRANT OPERATE ON WAREHOUSE <company>_WH TO ROLE analyst;
+
+--------------------------------
+-- tableau_role
+--------------------------------
+-- create role
+create role tableau_role;
+-- operate on wh
+GRANT OPERATE ON WAREHOUSE reporting_wh TO ROLE tableau_role;
+-- select from tables
+grant select on all tables in   database    util_db to role developer;
+grant select on future tables in database   util_db to role developer;
+-- select from views
+grant select on all views in   database    util_db to role developer;
+grant select on future views in database   util_db to role developer;
+
+--------------------------------
+-- create users
+--------------------------------
+
+CREATE USER LIAT PASSWORD='liatferP0nt3ra!' LOGIN_NAME = Liat FIRST_NAME = Liat LAST_NAME = Ferman EMAIL = 'liatfer@pontera.com' DEFAULT_ROLE = developer MUST_CHANGE_PASSWORD = TRUE;
+-- CREATE USER TAL PASSWORD='talP0nt3ra!' LOGIN_NAME = TAL FIRST_NAME = Tal LAST_NAME = Sabag EMAIL = 'tal@pontera.com' DEFAULT_ROLE = developer MUST_CHANGE_PASSWORD = TRUE;
+-- CREATE USER IDO PASSWORD='liatP0nt3ra!' LOGIN_NAME = Liat FIRST_NAME = Liat LAST_NAME = Ferman EMAIL = 'liatfer@pontera.com' DEFAULT_ROLE = developer MUST_CHANGE_PASSWORD = TRUE;
+-- CREATE USER RON PASSWORD='liatP0nt3ra!' LOGIN_NAME = Liat FIRST_NAME = Liat LAST_NAME = Ferman EMAIL = 'liatfer@pontera.com' DEFAULT_ROLE = developer MUST_CHANGE_PASSWORD = TRUE;
+-- CREATE USER YARDEN PASSWORD='liatP0nt3ra!' LOGIN_NAME = Liat FIRST_NAME = Liat LAST_NAME = Ferman EMAIL = 'liatfer@pontera.com' DEFAULT_ROLE = developer MUST_CHANGE_PASSWORD = TRUE;
+-- CREATE USER ANTON PASSWORD='liatP0nt3ra!' LOGIN_NAME = Liat FIRST_NAME = Liat LAST_NAME = Ferman EMAIL = 'liatfer@pontera.com' DEFAULT_ROLE = developer MUST_CHANGE_PASSWORD = TRUE;
+
+--------------------------------
+-- assign roles to users
+--------------------------------
+
+GRANT ROLE developer TO USER LIAT;
+GRANT ROLE developer TO USER TAL;
+GRANT ROLE developer TO USER IDO;
+GRANT ROLE developer TO USER RON;
+GRANT ROLE developer TO USER YARDEN;
+GRANT ROLE developer TO USER ANTON;
+
+
+--------------------------------
+-- grant specific privileges to roles
+--------------------------------
+
+grant usage on                  database    util_db to role developer;
+grant create schema on          database    util_db to role developer;
+grant usage on all schemas in   database    util_db to role developer;
+grant usage on future schemas in database   util_db to role developer;
+-- tables
+grant select on all tables in database    util_db to role developer;
+grant select on future tables in database   util_db to role developer;
+grant insert on all tables in   database    util_db to role developer;
+grant insert on future tables in database   util_db to role developer;
+grant update on all tables in   database    util_db to role developer;
+grant update on future tables in database   util_db to role developer;
+GRANT DELETE ON ALL TABLES IN   DATABASE    util_db TO ROLE developer;
+grant delete on future tables in database   util_db to role developer;
+GRANT TRUNCATE ON ALL TABLES IN DATABASE    util_db TO ROLE developer;
+-- views
+grant select on all views in   database    util_db to role developer;
+grant select on future views in database   util_db to role developer;
+grant insert on all views in   database    util_db to role developer;
+grant insert on future views in database   util_db to role developer;
+grant update on all views in   database    util_db to role developer;
+grant update on future views in database   util_db to role developer;
+GRANT DELETE ON ALL views IN   DATABASE    util_db TO ROLE developer;
+grant delete on future views in database   util_db to role developer;
+-- table in a specific schema
+grant select on all tables in schema   util_db.dbt_lribke to role developer;
+grant select on future tables in schema   util_db.dbt_lribke to role developer;
+grant insert on all tables in schema   util_db.dbt_lribke to role developer;
+grant insert on future tables in schema   util_db.dbt_lribke to role developer;
+grant update on all tables in schema   util_db.dbt_lribke to role developer;
+grant update on future tables in schema   util_db.dbt_lribke to role developer;
+grant delete on all tables in schema   util_db.dbt_lribke to role developer;
+grant delete on future tables in schema   util_db.dbt_lribke to role developer;
+-- create schema
+grant create table on schema              util_db.dbt_lribke to role developer;
+grant create view on schema              util_db.dbt_lribke to role developer;
+-- functions in a specific schema
+grant usage on all functions in schema UTIL_DB.dbt_lribke to role developer;
+grant all on future functions in schema UTIL_DB.dbt_lribke  to role developer;
+GRANT CREATE FUNCTION ON SCHEMA "UTIL_DB".dbt_lribke TO developer;
