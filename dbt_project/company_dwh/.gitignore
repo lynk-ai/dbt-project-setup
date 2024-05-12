@@ -1,4 +1,9 @@
-
 target/
+dbt_modules/
 dbt_packages/
 logs/
+.idea/
+.vscode/settings.json
+.dbtenv/
+
+profiles.yml
