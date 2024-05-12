@@ -1,18 +1,51 @@
-my-snowflake-db:
+customername_dwh:
   target: dev
   outputs:
     dev:
       type: snowflake
-      account: <SNOWFLAKE_HOST>
+      account: <SNOWFLAKE_HOST> # example: kub12345.us-east-1
 
       # User/password auth
-      user: <SNOWFLAKE_USERNAME>
+      user: <SNOWFLAKE_USERNAME> # in big letters
       password: <SNOWFLAKE_PASSWORD>
 
-      role: <SNOWFLAKE_ROLE>
-      database: <SNOWFLAKE_DATABASE>
-      warehouse: <SNOWFLAKE_WAREHOUSE>
-      schema: TPCH_SF10
+       # SSO config -- The three following fields are REQUIRED
+      # authenticator: [Okta account URL]
+      # username: [Okta username]
+      # password: [Okta password]
+
+      role: DEVELOPER
+      database: util_db
+      warehouse: COMPUTE_WH
+      schema: name_of_developer #example: lcohen
+      threads: 4
+      client_session_keep_alive: False
+      query_tag: anything
+
+      # optional
+      connect_retries: 0 # default 0
+      connect_timeout: 10 # default: 10
+      retry_on_database_errors: False # default: false
+      retry_all: False  # default: false
+      reuse_connections: False # default: false (available v1.4+)
+
+    production:
+      type: snowflake
+      account: <SNOWFLAKE_HOST> # example: kub12345.us-east-1
+
+      # User/password auth
+      user: <SNOWFLAKE_USERNAME> # in big letters
+      password: <SNOWFLAKE_PASSWORD>
+
+       # SSO config -- The three following fields are REQUIRED
+      # authenticator: [Okta account URL]
+      # username: [Okta username]
+      # password: [Okta password]
+
+      role: DEVELOPER
+      database: default # we set this up in dbt_project.yml - default here is a fallback
+      warehouse: COMPUTE_WH
+      schema: default # we set this up in dbt_project.yml - default here is a fallback
       threads: 4
       client_session_keep_alive: False
       query_tag: anything
