@@ -1,0 +1,36 @@
+name: Cancel running DBT job
+
+
+# This filter says only run this job when there is a push to the main branch
+# This works off the assumption that you've restrictred this branch to only all PRs to push to the deafult branch
+# Update the name to match the name of your default branch
+on:
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab if needed
+  workflow_dispatch:
+
+jobs:
+
+  cancel_running_slim_ci_jobs:
+  
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+
+      # running the step to cancel another other CI job runs that are running except the latest
+      - name: Cancel another other CI runs that are running except the latest run
+        id: cancel_stale_ci_runs
+        uses: stevedow99/dbt-cloud-dynamic-ci-job-cancel-action@v1.3
+        with:
+          only_cancel_run_if_commit_is_using_pr_branch: true
+          github_pr_number: ${{ github.event.number }}
+          dbt_cloud_token: ${{ secrets.DBT_API_KEY }}
+          dbt_cloud_account_id: 7767
+          dbt_cloud_job_id: 20689
+
+  # dbt Cloud API to runs with the webhook
+  
