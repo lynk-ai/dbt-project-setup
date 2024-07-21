@@ -35,9 +35,10 @@ Recommendation: in the folder containing the git repo folder
 Once you have cloned the repo and have your own profiles.yml and dbt project run the following command:
 
 ```bash
-/bin/bash ./lynk-dbt.sh \ 
+/bin/bash ./dbt-start.sh \ 
 --project <DBT_PROJ_PATH> \
---profiles <PROFILES_FILE_PATH>
+--profiles <PROFILES_FILE_PATH> \
+<DBT_COMMAND>
 ```
 
 **Notes:** 
